@@ -46,20 +46,19 @@ our $VERSION = '0.01';
 
 =head1 SYNOPSIS
 
-    my $foo = Regexp::Log::Combined->new(
-        format => ':combined',
-        capture => 'ts method resource proto',
-    );
+ my $foo = Regexp::Log::Combined->new(
+     format => ':combined',
+     capture => [qw( host rfc authuser date ts request req method resource proto status bytes referer ref useragent ua )],
+ );
 
-    my @fields = $foo->capture;
+ my @fields = $foo->capture;
 
-    my $re = $foo->regexp;
+ my $re = $foo->regexp;
 
-    while (<>) {
-        my %data;
-        @data{@fields} = /$re/;
-    }
-
+ while (<>) {
+     my %data;
+     @data{@fields} = /$re/;
+ }
 
 =head1 DESCRIPTION
 
@@ -71,6 +70,92 @@ This module is inspired by Regexp::Log::Common.
 Difference between these two modules is variation of captured fields.
 Regexp::Log::Combined can capture request string separately.
 You can get request string as three patrs, $method, $resource, and $proto.
+
+=head1 LOG FORMATS
+
+=head2 Common Log Format
+
+ my $foo = Regexp::Log::Combined->new( format => ':common' );
+
+=over
+
+=item * Fields
+
+ remotehost rfc931 authuser [date] "request" status bytes
+
+=item * Example
+
+ 127.0.0.1 - - [19/Jan/2005:21:47:11 +0000] "GET /brum.css HTTP/1.1" 304 0
+
+ remotehost: 127.0.0.1
+ rfc931: -
+ authuser: -
+ [date]: [19/Jan/2005:21:47:11 +0000]
+ "request": "GET /brum.css HTTP/1.1"
+ status: 304
+ bytes: 0
+
+=item * Available Capture Fields
+
+ * host
+ * rfc
+ * authuser
+ * date
+ ** ts (date without [])
+ * request
+ ** req (request without the quotes)
+ *** method (part of req)
+ *** resource (part of req)
+ *** proto (part of req)
+ * status
+ * bytes
+
+=back
+
+=head2 Extended Common Log Format (combined)
+
+ my $foo = Regexp::Log::Combined->new( format => ':combined' );
+
+=over
+
+=item * Fields
+
+ remotehost rfc931 authuser [date] "request" status bytes "referer" "user_agent"
+
+=item * Example
+
+ 127.0.0.1 - - [19/Jan/2005:21:47:11 +0000] "GET /brum.css HTTP/1.1" 304 0 "http://birmingham.pm.org/" "Mozilla/2.0GoldB1 (Win95; I)"
+
+ remotehost: 127.0.0.1
+ rfc931: -
+ authuser: -
+ [date]: [19/Jan/2005:21:47:11 +0000]
+ "request": "GET /brum.css HTTP/1.1"
+ status: 304
+ bytes: 0
+ "referer": "http://birmingham.pm.org/"
+ "user_agent": "Mozilla/2.0GoldB1 (Win95; I)"
+
+=item * Available Capture Fields
+
+ * host
+ * rfc
+ * authuser
+ * date
+ ** ts (date without [])
+ * request
+ ** req (request without the quotes)
+ *** method (part of req)
+ *** resource (part of req)
+ *** proto (part of req)
+ * status
+ * bytes
+ * referer
+ ** ref (referer without the quotes)
+ * useragent
+ ** ua (useragent without the quotes)
+
+=back
 
 =head1 SEE ALSO
 
