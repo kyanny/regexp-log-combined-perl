@@ -9,6 +9,7 @@ my $builder = Module::Build->new(
     dist_version_from   => 'lib/Regexp/Log/Combined.pm',
     build_requires => {
         'Test::More' => 0,
+        'Regexp::Log' => 0,
     },
     add_to_cleanup      => [ 'Regexp-Log-Combined-*' ],
     create_makefile_pl => 'traditional',

@@ -1,9 +1,16 @@
+.cvsignore
 Build.PL
 Changes
-MANIFEST
-Makefile.PL
-README
+examples/combined.pl
+examples/common.pl
 lib/Regexp/Log/Combined.pm
+Makefile.PL
+MANIFEST			This list of files
+README
 t/00-load.t
+t/10common.t
+t/boilerplate.t
+t/combined.log
+t/common.log
 t/pod-coverage.t
 t/pod.t
