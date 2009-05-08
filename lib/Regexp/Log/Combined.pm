@@ -18,14 +18,14 @@ our %FORMAT = (
 );
 
 our %REGEXP = (
-    '%host' => '(?#=host)\S+(?#!host)', # numeric or name of remote host
-    '%rfc' => '(?#=rfc).*?(?#!rfc)',    # rfc931
-    '%authuser' => '(?#=authuser).*?(?#!authuser)', # authuser
-    '%date' => '(?#=date)\[(?#=ts)\d{2}\/\w{3}\/\d{4}(?::\d{2}){3} [-+]\d{4}(?#!ts)\](?#!date)', # [date] (see note)
-    '%request' => '(?#=request)\"(?#=req)(?#=method)\S+(?#!method) (?#=resource)\S+(?#!resource) (?#=proto)\S+(?#!proto)(?#!req)\"(?#!request)', # "request"
-    '%status' => '(?#=status)\d+(?#!status)',    # status
-    '%bytes' => '(?#=bytes)-|\d+(?#!bytes)',     # bytes
-    '%referer' => '(?#=referer)\"(?#=ref).*?(?#!ref)\"(?#!referer)', # "referer"
+    '%host'      => '(?#=host)\S+(?#!host)', # numeric or name of remote host
+    '%rfc'       => '(?#=rfc).*?(?#!rfc)', # rfc931
+    '%authuser'  => '(?#=authuser).*?(?#!authuser)', # authuser
+    '%date'      => '(?#=date)\[(?#=ts)\d{2}\/\w{3}\/\d{4}(?::\d{2}){3} [-+]\d{4}(?#!ts)\](?#!date)', # [date] (see note)
+    '%request'   => '(?#=request)\"(?#=req)(?#=method)\S+(?#!method) (?#=resource)\S+(?#!resource) (?#=proto)\S+(?#!proto)(?#!req)\"(?#!request)', # "request"
+    '%status'    => '(?#=status)\d+(?#!status)', # status
+    '%bytes'     => '(?#=bytes)-|\d+(?#!bytes)', # bytes
+    '%referer'   => '(?#=referer)\"(?#=ref).*?(?#!ref)\"(?#!referer)', # "referer"
     '%useragent' => '(?#=useragent)\"(?#=ua).*?(?#!ua)\"(?#!useragent)', # "user_agent"
 );
 
@@ -33,7 +33,7 @@ our %REGEXP = (
 
 =head1 NAME
 
-Regexp::Log::Combined -
+Regexp::Log::Combined - A regular expression parser for the Common Log Format
 
 =head1 VERSION
 
@@ -46,57 +46,39 @@ our $VERSION = '0.01';
 
 =head1 SYNOPSIS
 
+    my $foo = Regexp::Log::Combined->new(
+        format => ':combined',
+        capture => 'ts method resource proto',
+    );
 
-=head1 EXPORT
+    my @fields = $foo->capture;
+
+    my $re = $foo->regexp;
+
+    while (<>) {
+        my %data;
+        @data{@fields} = /$re/;
+    }
 
 
-=head1 FUNCTIONS
+=head1 DESCRIPTION
+
+Regexp::Log::Combined is subclass of Regexp::Log.
+This module provides a regular expression for parse Common Log Format,
+includes Extended (combined) log format.
+
+This module is inspired by Regexp::Log::Common.
+Difference between these two modules is variation of captured fields.
+Regexp::Log::Combined can capture request string separately.
+You can get request string as three patrs, $method, $resource, and $proto.
+
+=head1 SEE ALSO
+
+L<Regexp::Log>, L<Regexp::Log::Common>
 
 =head1 AUTHOR
 
 Kensuke Kaneko, C<< <kyanny at gmail.com> >>
-
-=head1 BUGS
-
-Please report any bugs or feature requests to C<bug-regexp-log-combined at rt.cpan.org>, or through
-the web interface at L<http://rt.cpan.org/NoAuth/ReportBug.html?Queue=Regexp-Log-Combined>.  I will be notified, and then you'll
-automatically be notified of progress on your bug as I make changes.
-
-
-
-
-=head1 SUPPORT
-
-You can find documentation for this module with the perldoc command.
-
-    perldoc Regexp::Log::Combined
-
-
-You can also look for information at:
-
-=over 4
-
-=item * RT: CPAN's request tracker
-
-L<http://rt.cpan.org/NoAuth/Bugs.html?Dist=Regexp-Log-Combined>
-
-=item * AnnoCPAN: Annotated CPAN documentation
-
-L<http://annocpan.org/dist/Regexp-Log-Combined>
-
-=item * CPAN Ratings
-
-L<http://cpanratings.perl.org/d/Regexp-Log-Combined>
-
-=item * Search CPAN
-
-L<http://search.cpan.org/dist/Regexp-Log-Combined>
-
-=back
-
-
-=head1 ACKNOWLEDGEMENTS
-
 
 =head1 COPYRIGHT & LICENSE
 
