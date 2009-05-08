@@ -1,4 +1,3 @@
-.cvsignore
 Build.PL
 Changes
 examples/combined.pl
@@ -6,6 +5,7 @@ examples/common.pl
 lib/Regexp/Log/Combined.pm
 Makefile.PL
 MANIFEST			This list of files
+MANIFEST.SKIP
 README
 t/00-load.t
 t/10common.t

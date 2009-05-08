@@ -37,3 +37,4 @@
 \B\.cvsignore\b
 \B\.svnignore\b
 \binc/
+\bMANIFEST\.SKIP
