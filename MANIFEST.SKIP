@@ -38,3 +38,4 @@
 \B\.svnignore\b
 \binc/
 \bMANIFEST\.SKIP
+\bMETA.yml
