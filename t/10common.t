@@ -1,24 +1,24 @@
-use Test::More tests => 46;
+use Test::More tests => 49;
 use strict;
-use Regexp::Log::Common;
+use Regexp::Log::Combined;
 use IO::File;
 
 my @list1 = qw(host rfc authuser);
 my @list2 = qw(host rfc authuser date request status bytes);
 my @list3 = qw(host rfc authuser date request status bytes referer useragent);
-my @list4 = qw(host rfc authuser date ts request req status bytes referer ref useragent ua);
-my @list5 = qw(host rfc authuser date ts request req status bytes);
+my @list4 = qw(host rfc authuser date ts request req method resource proto status bytes referer ref useragent ua);
+my @list5 = qw(host rfc authuser date ts request req method resource proto status bytes);
 my $form1 = join(' ',map { '%'.$_ } @list1);
 my $form2 = join(' ',map { '%'.$_ } @list2);
 my $form3 = join(' ',map { '%'.$_ } @list3);
 
-my $foo = Regexp::Log::Common->new();
-isa_ok($foo, 'Regexp::Log::Common');
+my $foo = Regexp::Log::Combined->new();
+isa_ok($foo, 'Regexp::Log::Combined');
 
 # check defaults
 is( $foo->format , $form3, "Default format" );
 my @capture = $foo->capture;
-is( @capture , 13, "Default capture" );
+is( @capture , 16, "Default capture" );
 is( $capture[6] , 'req', "Default captured field" );
 is( $foo->comments , 0, "Default comments" );
 
@@ -27,12 +27,12 @@ is( $foo->format($form1) , $form1, "Format return new value" );
 is( $foo->format , $form1, "new format value is set" );
 
 # check other formats
-$foo = Regexp::Log::Common->new(format => ':default');
-is( $foo->format , $form2, "Default format" );
-$foo = Regexp::Log::Common->new(format => ':common');
+$foo = Regexp::Log::Combined->new(format => ':default');
+is( $foo->format , $form3, "Default format" );
+$foo = Regexp::Log::Combined->new(format => ':common');
 is( $foo->format , $form2, "Common format" );
-$foo = Regexp::Log::Common->new(format => ':extended');
-is( $foo->format , $form3, "Extended format" );
+$foo = Regexp::Log::Combined->new(format => ':combined');
+is( $foo->format , $form3, "Combined format" );
 
 # check the fields method
 my @fields = sort $foo->fields;
@@ -54,7 +54,7 @@ for (qw( date request )) {
     is( $fields[ $i++ ] , $_, "Field $_ is captured" );
 }
 
-$foo = Regexp::Log::Common->new(format => '%date %authuser %rfc');
+$foo = Regexp::Log::Combined->new(format => '%date %authuser %rfc');
 @fields = sort $foo->capture;
 $i      = 0;
 for (qw(authuser date rfc )) {
@@ -82,7 +82,7 @@ is( @{ [ $foo->regexp =~ /(\(\?\#.*?\))/g ] } , 2,
 $foo->comments(0);
 
 # test the regex on real CLF log lines
-$foo = Regexp::Log::Common->new(format => ':common');
+$foo = Regexp::Log::Combined->new(format => ':common');
 @fields = $foo->capture(":common");
 is( @fields , @list5, "Capture :common" );
 $regexp = $foo->regexp;
@@ -97,6 +97,9 @@ my @data = (
 		ts => '19/Jan/2005:21:42:43 +0000',
 		request => '"POST /cgi-bin/brum.pl?act=evnt-edit&eventid=24 HTTP/1.1"',
 		req => 'POST /cgi-bin/brum.pl?act=evnt-edit&eventid=24 HTTP/1.1',
+                method => 'POST',
+                resource => '/cgi-bin/brum.pl?act=evnt-edit&eventid=24',
+                proto => 'HTTP/1.1',
 		status => 200,
 		bytes => 11435
     },
@@ -108,6 +111,9 @@ my @data = (
 		ts => '19/Jan/2005:21:43:29 +0000',
 		request => '"GET /images/perl_id_313c.gif HTTP/1.1"',
 		req => 'GET /images/perl_id_313c.gif HTTP/1.1',
+                method => 'GET',
+                resource => '/images/perl_id_313c.gif',
+                proto => 'HTTP/1.1',
 		status => 304,
 		bytes => 0
     },
@@ -119,6 +125,9 @@ my @data = (
 		ts => '19/Jan/2005:21:47:11 +0000',
 		request => '"GET /brum.css HTTP/1.1"',
 		req => 'GET /brum.css HTTP/1.1',
+                method => 'GET',
+                resource => '/brum.css',
+                proto => 'HTTP/1.1',
 		status => 304,
 		bytes => 0
     },
@@ -130,6 +139,9 @@ my @data = (
 		ts => '19/Jan/2005:21:47:11 +0000',
 		request => '"GET /brum.css HTTP/1.1"',
 		req => 'GET /brum.css HTTP/1.1',
+                method => 'GET',
+                resource => '/brum.css',
+                proto => 'HTTP/1.1',
 		status => 304,
 		bytes => '-'
     },
@@ -144,9 +156,9 @@ while (<$fh>) {
 $fh->close;
 
 # test the regex on real ECLF log lines
-$foo = Regexp::Log::Common->new(format => ':extended');
-@fields = $foo->capture(":extended");
-is( @fields , @list4, "Capture :extended" );
+$foo = Regexp::Log::Combined->new(format => ':combined');
+@fields = $foo->capture(":combined");
+is( @fields , @list4, "Capture :combined" );
 $regexp = $foo->regexp;
 
 %data = ();
@@ -159,6 +171,9 @@ $regexp = $foo->regexp;
 		ts => '19/Jan/2005:21:42:43 +0000',
 		request => '"POST /cgi-bin/brum.pl?act=evnt-edit&eventid=24 HTTP/1.1"',
 		req => 'POST /cgi-bin/brum.pl?act=evnt-edit&eventid=24 HTTP/1.1',
+                method => 'POST',
+                resource => '/cgi-bin/brum.pl?act=evnt-edit&eventid=24',
+                proto => 'HTTP/1.1',
 		status => 200,
 		bytes => 11435,
 		referer => '"http://birmingham.pm.org/"',
@@ -174,6 +189,9 @@ $regexp = $foo->regexp;
 		ts => '19/Jan/2005:21:43:29 +0000',
 		request => '"GET /images/perl_id_313c.gif HTTP/1.1"',
 		req => 'GET /images/perl_id_313c.gif HTTP/1.1',
+                method => 'GET',
+                resource => '/images/perl_id_313c.gif',
+                proto => 'HTTP/1.1',
 		status => 304,
 		bytes => 0,
 		referer => '"http://birmingham.pm.org/"',
@@ -189,6 +207,9 @@ $regexp = $foo->regexp;
 		ts => '19/Jan/2005:21:47:11 +0000',
 		request => '"GET /brum.css HTTP/1.1"',
 		req => 'GET /brum.css HTTP/1.1',
+                method => 'GET',
+                resource => '/brum.css',
+                proto => 'HTTP/1.1',
 		status => 304,
 		bytes => 0,
 		referer => '"http://birmingham.pm.org/"',
@@ -198,11 +219,11 @@ $regexp = $foo->regexp;
     },
 );
 
-$fh = IO::File->new('t/extended.log');
+$fh = IO::File->new('t/combined.log');
 $i = 0;
 while (<$fh>) {
     @data{@fields} = /$regexp/;
-    is_deeply( \%data, $data[ $i++ ], "extended.log line " . ( $i + 1 ) );
+    is_deeply( \%data, $data[ $i++ ], "combined.log line " . ( $i + 1 ) );
 }
 $fh->close;
 

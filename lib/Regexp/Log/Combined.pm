@@ -3,9 +3,37 @@ package Regexp::Log::Combined;
 use warnings;
 use strict;
 
+use base qw(Regexp::Log);
+
+our %DEFAULT = (
+    format  => '%host %rfc %authuser %date %request %status %bytes %referer %useragent',
+    capture => [qw(host rfc authuser date ts request req method resource proto status bytes referer ref useragent ua)]
+);
+
+our %FORMAT = (
+    ':default'  => '%host %rfc %authuser %date %request %status %bytes %referer %useragent',
+    ':common'   => '%host %rfc %authuser %date %request %status %bytes',
+    ':combined' => '%host %rfc %authuser %date %request %status %bytes %referer %useragent',
+    ':extended' => '%host %rfc %authuser %date %request %status %bytes %referer %useragent',
+);
+
+our %REGEXP = (
+    '%host' => '(?#=host)\S+(?#!host)', # numeric or name of remote host
+    '%rfc' => '(?#=rfc).*?(?#!rfc)',    # rfc931
+    '%authuser' => '(?#=authuser).*?(?#!authuser)', # authuser
+    '%date' => '(?#=date)\[(?#=ts)\d{2}\/\w{3}\/\d{4}(?::\d{2}){3} [-+]\d{4}(?#!ts)\](?#!date)', # [date] (see note)
+    '%request' => '(?#=request)\"(?#=req)(?#=method)\S+(?#!method) (?#=resource)\S+(?#!resource) (?#=proto)\S+(?#!proto)(?#!req)\"(?#!request)', # "request"
+    '%status' => '(?#=status)\d+(?#!status)',    # status
+    '%bytes' => '(?#=bytes)-|\d+(?#!bytes)',     # bytes
+    '%referer' => '(?#=referer)\"(?#=ref).*?(?#!ref)\"(?#!referer)', # "referer"
+    '%useragent' => '(?#=useragent)\"(?#=ua).*?(?#!ua)\"(?#!useragent)', # "user_agent"
+);
+
+# note: date is in the format [01/Jan/1997:13:07:21 -0600]
+
 =head1 NAME
 
-Regexp::Log::Combined - The great new Regexp::Log::Combined!
+Regexp::Log::Combined -
 
 =head1 VERSION
 
@@ -18,35 +46,11 @@ our $VERSION = '0.01';
 
 =head1 SYNOPSIS
 
-Quick summary of what the module does.
-
-Perhaps a little code snippet.
-
-    use Regexp::Log::Combined;
-
-    my $foo = Regexp::Log::Combined->new();
-    ...
 
 =head1 EXPORT
 
-A list of functions that can be exported.  You can delete this section
-if you don't export anything, such as for a purely object-oriented module.
 
 =head1 FUNCTIONS
-
-=head2 function1
-
-=cut
-
-sub function1 {
-}
-
-=head2 function2
-
-=cut
-
-sub function2 {
-}
 
 =head1 AUTHOR
 

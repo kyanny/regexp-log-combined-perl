@@ -1,8 +1,4 @@
-10.0.1.200 - - [08/May/2009:02:45:42 +0900] "GET /manual/ HTTP/1.1" 200 8286
-10.0.1.200 - - [08/May/2009:02:45:42 +0900] "GET /manual/style/css/manual.css HTTP/1.1" 200 18674
-10.0.1.200 - - [08/May/2009:02:45:42 +0900] "GET /manual/style/css/manual-print.css HTTP/1.1" 200 13200
-10.0.1.200 - - [08/May/2009:02:45:43 +0900] "GET /manual/style/css/manual-loose-100pc.css HTTP/1.1" 200 3065
-10.0.1.200 - - [08/May/2009:02:45:43 +0900] "GET /manual/images/favicon.ico HTTP/1.1" 200 1078
-10.0.1.200 - - [08/May/2009:02:45:44 +0900] "GET /manual/images/left.gif HTTP/1.1" 200 60
-10.0.1.200 - - [08/May/2009:02:45:44 +0900] "GET /manual/images/feather.gif HTTP/1.1" 200 6471
-10.0.1.200 - - [08/May/2009:02:45:46 +0900] "GET /manual/images/favicon.ico HTTP/1.1" 200 1078
+127.0.0.1 - - [19/Jan/2005:21:42:43 +0000] "POST /cgi-bin/brum.pl?act=evnt-edit&eventid=24 HTTP/1.1" 200 11435
+127.0.0.1 - - [19/Jan/2005:21:43:29 +0000] "GET /images/perl_id_313c.gif HTTP/1.1" 304 0
+127.0.0.1 - - [19/Jan/2005:21:47:11 +0000] "GET /brum.css HTTP/1.1" 304 0
+127.0.0.1 - - [19/Jan/2005:21:47:11 +0000] "GET /brum.css HTTP/1.1" 304 -
