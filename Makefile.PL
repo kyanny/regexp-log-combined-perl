@@ -1,17 +1,13 @@
-use strict;
-use warnings;
-use ExtUtils::MakeMaker;
+use inc::Module::Install;
 
-WriteMakefile(
-    NAME                => 'Regexp::Log::Combined',
-    AUTHOR              => 'Kensuke Kaneko <kyanny@gmail.com>',
-    VERSION_FROM        => 'lib/Regexp/Log/Combined.pm',
-    ABSTRACT_FROM       => 'lib/Regexp/Log/Combined.pm',
-    PL_FILES            => {},
-    PREREQ_PM => {
-        'Test::More' => 0,
-        'Regexp::Log' => 0,
-    },
-    dist                => { COMPRESS => 'gzip -9f', SUFFIX => 'gz', },
-    clean               => { FILES => 'Regexp-Log-Combined-*' },
-);
+name     'Regexp-Log-Combined';
+all_from 'lib/Regexp::Log::Combined';
+author   'Kensuke Kaneko <kyanny@gmail.com>';
+
+requires       'Regexp::Log';
+build_requires 'Test::More';
+
+auto_install;
+
+WriteAll;
+
